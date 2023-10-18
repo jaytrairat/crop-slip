@@ -14,7 +14,7 @@ import (
 	"image/png"
 
 	"github.com/fatih/color"
-	"github.com/jaytrairat/extract-account/constant"
+	"github.com/jaytrairat/crop-slip/constant"
 	"github.com/spf13/cobra"
 )
 
@@ -62,8 +62,8 @@ func cropImage(inputPath, outputPath string) bool {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "extract-account",
-	Short: "Extract account from slip by cropping and OCR",
+	Use:   "crop-slip",
+	Short: "Crop account from slip",
 	Run: func(cmd *cobra.Command, args []string) {
 		red := color.New(color.FgRed)
 		green := color.New(color.FgGreen)

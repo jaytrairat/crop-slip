@@ -1,4 +1,4 @@
-module github.com/jaytrairat/extract-account
+module github.com/jaytrairat/crop-slip
 
 go 1.20
 
