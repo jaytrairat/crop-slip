@@ -25,4 +25,16 @@ var SLIP_TYPE = map[string]map[string]interface{}{
 		"WIDTH":  360,
 		"HEIGHT": 110,
 	},
+	"next": {
+		"X":      115,
+		"Y":      440,
+		"WIDTH":  540,
+		"HEIGHT": 150,
+	},
+	"ttb": {
+		"X":      135,
+		"Y":      655,
+		"WIDTH":  500,
+		"HEIGHT": 150,
+	},
 }
