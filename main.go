@@ -84,8 +84,9 @@ var rootCmd = &cobra.Command{
 
 					if err != nil {
 						log.Printf("Error cropping image %s: %s\n", path, err)
+					} else {
+						numberOfFile++
 					}
-					numberOfFile++
 				}
 			}
 			return nil
@@ -102,8 +103,14 @@ func Execute() {
 }
 
 func main() {
+	var bankList []string
+	for key := range constant.SLIP_TYPE {
+		bankList = append(bankList, key)
+	}
 	rootCmd.Flags().StringVarP(&sourceFolder, "source", "s", "", "Source folder containing images")
-	rootCmd.Flags().StringVarP(&configType, "type", "t", "", "Type of account :: scb, kbank, cimb, ghb")
+	rootCmd.Flags().StringVarP(&configType, "type", "t", "", fmt.Sprintf("Type of account :: %s", strings.Join(bankList, ", ")))
+	rootCmd.MarkFlagRequired("source")
+	rootCmd.MarkFlagRequired("type")
 
 	Execute()
 }

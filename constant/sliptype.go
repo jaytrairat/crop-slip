@@ -13,7 +13,13 @@ var SLIP_TYPE = map[string]map[string]interface{}{
 		"WIDTH":  720,
 		"HEIGHT": 200,
 	},
-	"kbank": {
+	"kplus": {
+		"X":      135,
+		"Y":      380,
+		"WIDTH":  510,
+		"HEIGHT": 200,
+	},
+	"kma": {
 		"X":      135,
 		"Y":      380,
 		"WIDTH":  510,
