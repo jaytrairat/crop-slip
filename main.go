@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
-	"image/jpeg"
-	"image/png"
-	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
+	"image/jpeg"
+	"image/png"
+
+	"github.com/fatih/color"
 	"github.com/jaytrairat/extract-account/constant"
 	"github.com/spf13/cobra"
 )
@@ -22,23 +23,23 @@ var (
 	configType   string
 )
 
-func cropImage(inputPath, outputPath string) error {
+func cropImage(inputPath, outputPath string) bool {
 	configForCropping := constant.SLIP_TYPE[configType]
 	if configForCropping != nil {
 		inputFile, err := os.Open(inputPath)
 		if err != nil {
-			return err
+			return false
 		}
 		defer inputFile.Close()
 
 		img, _, err := image.Decode(inputFile)
 		if err != nil {
-			return err
+			return false
 		}
 
 		outputFile, err := os.Create(outputPath)
 		if err != nil {
-			return err
+			return false
 		}
 		defer outputFile.Close()
 
@@ -47,14 +48,16 @@ func cropImage(inputPath, outputPath string) error {
 
 		ext := strings.ToLower(filepath.Ext(outputPath))
 		if ext == ".png" {
-			return png.Encode(outputFile, croppedImg)
+			png.Encode(outputFile, croppedImg)
 		} else if ext == ".jpg" || ext == ".jpeg" {
-			return jpeg.Encode(outputFile, croppedImg, nil)
+			jpeg.Encode(outputFile, croppedImg, nil)
 		} else {
-			return fmt.Errorf("Unsupported image format: %s", ext)
+			return false
 		}
+		strings.ToLower(filepath.Ext(outputPath))
+		return true
 	} else {
-		return nil
+		return false
 	}
 }
 
@@ -62,15 +65,10 @@ var rootCmd = &cobra.Command{
 	Use:   "extract-account",
 	Short: "Extract account from slip by cropping and OCR",
 	Run: func(cmd *cobra.Command, args []string) {
-		if sourceFolder == "" {
-			fmt.Println("Folder not found")
-			return
-		}
-		if configType == "" {
-			fmt.Println("Type not found")
-			return
-		}
-		fmt.Printf("%s :: start cropping\n", time.Now().Format("2006-01-02 03:04:05"))
+		red := color.New(color.FgRed)
+		green := color.New(color.FgGreen)
+		blue := color.New(color.FgBlue)
+		green.Printf("%s :: start cropping\n", time.Now().Format("2006-01-02 03:04:05"))
 		numberOfFile := 0
 		filepath.Walk(sourceFolder, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -83,18 +81,19 @@ var rootCmd = &cobra.Command{
 					outputFolderName := fmt.Sprintf("./%s_extracted", regexp.MustCompile("[^a-zA-Z0-9]+").ReplaceAllString(sourceFolder, ""))
 					os.MkdirAll(outputFolderName, os.ModePerm)
 					outputPath := filepath.Join(outputFolderName, filepath.Base(path))
-					err := cropImage(path, outputPath)
+					completed := cropImage(path, outputPath)
 
-					if err != nil {
-						log.Printf("Error cropping image %s: %s\n", path, err)
+					if !completed {
+						red.Printf("%s :: Error cropping image at %s\n", time.Now().Format("2006-01-02 03:04:05"), path)
 					} else {
+						blue.Printf("%s :: Image cropped image at %s\n", time.Now().Format("2006-01-02 03:04:05"), path)
 						numberOfFile++
 					}
 				}
 			}
 			return nil
 		})
-		fmt.Printf("%s :: %d image(s) cropped\n", time.Now().Format("2006-01-02 03:04:05"), numberOfFile)
+		green.Printf("%s :: %d image(s) cropped\n", time.Now().Format("2006-01-02 03:04:05"), numberOfFile)
 	},
 }
 
