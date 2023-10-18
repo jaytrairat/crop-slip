@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -77,9 +78,11 @@ var rootCmd = &cobra.Command{
 			}
 			if !info.IsDir() {
 				ext := strings.ToLower(filepath.Ext(path))
+
 				if ext == ".jpg" || ext == ".jpeg" || ext == ".png" {
-					os.MkdirAll("./output", os.ModePerm)
-					outputPath := filepath.Join("./output", filepath.Base(path))
+					outputFolderName := fmt.Sprintf("./%s_extracted", regexp.MustCompile("[^a-zA-Z0-9]+").ReplaceAllString(sourceFolder, ""))
+					os.MkdirAll(outputFolderName, os.ModePerm)
+					outputPath := filepath.Join(outputFolderName, filepath.Base(path))
 					err := cropImage(path, outputPath)
 
 					if err != nil {

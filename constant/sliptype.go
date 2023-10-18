@@ -20,9 +20,9 @@ var SLIP_TYPE = map[string]map[string]interface{}{
 		"HEIGHT": 200,
 	},
 	"kma": {
-		"X":      135,
-		"Y":      380,
-		"WIDTH":  510,
-		"HEIGHT": 200,
+		"X":      355,
+		"Y":      370,
+		"WIDTH":  360,
+		"HEIGHT": 110,
 	},
 }
